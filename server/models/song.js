@@ -5,7 +5,6 @@ const SongSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   url: {
     type: String,
@@ -16,16 +15,39 @@ const SongSchema = new Schema({
     required: true,
   },
   nol: {
+    //number of listeners
     type: Number,
-    required: true,
+    default: 0,
+    immutable: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
+    immutable: true,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
   },
   time: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  releaseDate: {
+    type: Date,
+    required: true,
+  },
+  wnol: {
+    //weekly number of listeners
+    type: Number,
+    default: 0,
+    immutable: true,
+  },
+  shareLink: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 
