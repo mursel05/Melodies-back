@@ -12,6 +12,9 @@ const port = process.env.PORT || 5000;
 // Load env vars
 dotenv.config();
 
+// Body parser
+app.use(express.json());
+
 // Connect to the database
 connectDB();
 
