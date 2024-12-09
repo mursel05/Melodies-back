@@ -3,14 +3,15 @@ const dotenv = require("dotenv");
 const connectDB = require("./server/config/db");
 const mainRoutes = require("./server/routes/main");
 const songRoutes = require("./server/routes/song");
+const userRoutes = require("./server/routes/user");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./server/config/swagger");
 
-const app = express();
-const port = process.env.PORT || 5000;
-
 // Load env vars
 dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 5000;
 
 // Body parser
 app.use(express.json());
@@ -21,6 +22,7 @@ connectDB();
 // Routes
 app.use("/", mainRoutes);
 app.use("/songs", songRoutes);
+app.use("/users", userRoutes);
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

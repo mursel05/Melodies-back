@@ -12,9 +12,16 @@ const swaggerOptions = {
     servers: [
       {
         url: "http://localhost:5000",
+        description: "Local server",
+      },
+      {
+        url: "https://melodies-back.onrender.com",
         description: "Development server",
       },
     ],
+    components: {
+      securitySchemes: { bearerAuth: { type: "http", scheme: "bearer" } },
+    },
   },
   apis: ["./server/routes/*.js"],
 };
