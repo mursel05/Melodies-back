@@ -1,180 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const songController = require("../controllers/songController");
+const userController = require("../controllers/userController");
 
 /**
  * @swagger
  * tags:
- *   name: Songs
- *   description: Endpoints for managing songs
+ *   name: Users
+ *   description: User management
  */
 
 /**
  * @swagger
- * /songs/{category}/{limit}:
- *   get:
- *     summary: Get all songs
- *     tags: [Songs]
- *     parameters:
- *       - in: path
- *         name: category
- *         required: true
- *         schema:
- *           type: string
- *         description: The category of the song to retrieve
- *       - in: path
- *         name: limit
- *         required: true
- *         schema:
- *           type: number
- *         description: The number of songs to retrieve
- *     responses:
- *       200:
- *         description: List of all songs
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the request was successful
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                         description: The song ID
- *                       name:
- *                         type: string
- *                         description: The song name
- *                       url:
- *                         type: string
- *                         description: The song URL
- *                       artists:
- *                         type: array
- *                         items:
- *                           type: string
- *                         description: List of song artists
- *                       nol:
- *                         type: number
- *                         description: Number of likes
- *                       createdAt:
- *                         type: string
- *                         format: date-time
- *                         description: Creation date of the song
- *                       time:
- *                         type: number
- *                         description: Duration of the song
- *                         default: 1
- *                       releaseDate:
- *                         type: string
- *                         format: date-time
- *                         description: Release date of the song
- *                       shareLink:
- *                         type: string
- *                         description: Share link of the song
- *       400:
- *         description: Error message
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the request was successful
- *                   default: false
- *                 error:
- *                   type: string
- *                   description: Error message
- */
-router.get("/:category/:limit", songController.getAllSongs);
-
-/**
- * @swagger
- * /songs/{id}:
- *   get:
- *     summary: Get a song by ID
- *     tags: [Songs]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the song to retrieve
- *     responses:
- *       200:
- *         description: Song found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the request was successful
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: The song ID
- *                     name:
- *                       type: string
- *                       description: The song name
- *                     url:
- *                       type: string
- *                       description: The song URL
- *                     artists:
- *                       type: array
- *                       items:
- *                         type: string
- *                       description: List of song artists
- *                     nol:
- *                       type: number
- *                       description: Number of likes
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       description: Creation date of the song
- *                     time:
- *                       type: number
- *                       description: Duration of the song
- *                       default: 1
- *                     releaseDate:
- *                       type: string
- *                       format: date-time
- *                       description: Release date of the song
- *                     shareLink:
- *                       type: string
- *                       description: Share link of the song
- *       400:
- *         description: Error message
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indicates if the request was successful
- *                   default: false
- *                 error:
- *                   type: string
- *                   description: Error message
- */
-router.get("/:id", songController.getSongById);
-
-/**
- * @swagger
- * /songs:
+ * /users/register:
  *   post:
- *     summary: Create a new song
- *     tags: [Songs]
+ *     summary: Register a new user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -184,29 +24,17 @@ router.get("/:id", songController.getSongById);
  *             properties:
  *               name:
  *                 type: string
- *                 description: The song name
- *               url:
+ *                 description: The user name
+ *               email:
  *                 type: string
- *                 description: The song URL
- *               artists:
- *                 type: array
- *                 items:
- *                   type: string
- *                 description: List of song artists
- *               time:
- *                 type: number
- *                 description: Duration of the song
- *                 default: 1
- *               releaseDate:
+ *                 description: The user email
+ *               password:
  *                 type: string
- *                 format: date-time
- *                 description: Release date of the song
+ *                 description: The user password
  *             required:
  *              - name
- *              - url
- *              - artists
- *              - time
- *              - releaseDate
+ *              - email
+ *              - password
  *     responses:
  *       201:
  *         description: Success message
@@ -218,9 +46,15 @@ router.get("/:id", songController.getSongById);
  *                 success:
  *                   type: boolean
  *                   description: Indicates if the request was successful
- *                 message:
- *                   type: string
- *                   description: Success message
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accesstoken:
+ *                       type: string
+ *                       description: Access token
+ *                     refreshToken:
+ *                       type: string
+ *                       description: Refresh token
  *       400:
  *         description: Error message
  *         content:
@@ -236,21 +70,14 @@ router.get("/:id", songController.getSongById);
  *                   type: string
  *                   description: Error message
  */
-router.post("/", songController.createSong);
+router.post("/register", userController.register);
 
 /**
  * @swagger
- * /songs/{id}:
- *   put:
- *     summary: Update a song by ID
- *     tags: [Songs]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the song to update
+ * /users/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -258,31 +85,15 @@ router.post("/", songController.createSong);
  *           schema:
  *             type: object
  *             properties:
- *              name:
- *                type: string
- *                description: The song name
- *              url:
- *                type: string
- *                description: The song URL
- *              artists:
- *                type: array
- *                items:
- *                  type: string
- *                  description: List of song artists
- *              time:
- *                type: number
- *                description: Duration of the song
- *                default: 1
- *              releaseDate:
- *                type: string
- *                format: date-time
- *                description: Release date of the song
+ *               email:
+ *                 type: string
+ *                 description: The user email
+ *               password:
+ *                 type: string
+ *                 description: The user password
  *             required:
- *              - name
- *              - url
- *              - artists
- *              - time
- *              - releaseDate
+ *              - email
+ *              - password
  *     responses:
  *       200:
  *         description: Success message
@@ -294,9 +105,15 @@ router.post("/", songController.createSong);
  *                 success:
  *                   type: boolean
  *                   description: Indicates if the request was successful
- *                 message:
- *                   type: string
- *                   description: Success message
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accesstoken:
+ *                       type: string
+ *                       description: Access token
+ *                     refreshToken:
+ *                       type: string
+ *                       description: Refresh token
  *       400:
  *         description: Error message
  *         content:
@@ -312,21 +129,16 @@ router.post("/", songController.createSong);
  *                   type: string
  *                   description: Error message
  */
-router.put("/:id", songController.updateSong);
+router.post("/login", userController.login);
 
 /**
  * @swagger
- * /songs/{id}:
- *   delete:
- *     summary: Delete a song by ID
- *     tags: [Songs]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the song to delete
+ * /users/refresh-tokens:
+ *   post:
+ *     summary: Refresh access and refresh tokens
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Success message
@@ -338,9 +150,15 @@ router.put("/:id", songController.updateSong);
  *                 success:
  *                   type: boolean
  *                   description: Indicates if the request was successful
- *                 message:
- *                   type: string
- *                   description: Success message
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     accesstoken:
+ *                       type: string
+ *                       description: Access token
+ *                     refreshToken:
+ *                       type: string
+ *                       description: Refresh token
  *       400:
  *         description: Error message
  *         content:
@@ -355,7 +173,21 @@ router.put("/:id", songController.updateSong);
  *                 error:
  *                   type: string
  *                   description: Error message
+ *       401:
+ *         description: Unauthorized message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: false
+ *                 error:
+ *                   type: string
+ *                   description: Error message
  */
-router.delete("/:id", songController.deleteSong);
+router.post("/refresh-tokens", userController.refreshTokens);
 
 module.exports = router;

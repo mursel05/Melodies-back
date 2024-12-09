@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 const UserSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+    immutable: true,
+  },
   name: {
     type: String,
     required: true,
@@ -9,10 +15,11 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   playlists: {
     type: [String],
-    default: [],
+    required: true,
   },
   password: {
     type: String,
@@ -20,20 +27,20 @@ const UserSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    required: true,
     immutable: true,
   },
   updatedAt: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
   subscription: {
     type: String,
-    default: "free",
+    required: true,
   },
   favourites: {
     type: [String],
-    default: [],
+    required: true,
   },
 });
 

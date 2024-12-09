@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 const SongSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+    immutable: true,
+  },
   name: {
     type: String,
     required: true,
@@ -17,22 +23,20 @@ const SongSchema = new Schema({
   nol: {
     //number of listeners
     type: Number,
-    default: 0,
-    immutable: true,
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    required: true,
     immutable: true,
   },
   updatedAt: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
   time: {
     type: Number,
     required: true,
-    min: 1,
   },
   releaseDate: {
     type: Date,
@@ -41,13 +45,7 @@ const SongSchema = new Schema({
   wnol: {
     //weekly number of listeners
     type: Number,
-    default: 0,
-    immutable: true,
-  },
-  shareLink: {
-    type: String,
     required: true,
-    unique: true,
   },
 });
 

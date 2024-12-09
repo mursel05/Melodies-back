@@ -30,7 +30,7 @@ exports.getAllSongs = async (req, res) => {
 
 exports.getSongById = async (req, res) => {
   try {
-    const song = await Song.findById(req.params.id);
+    const song = await Song.findOne({ id: req.params.id });
     if (song) {
       res.status(200).json({ success: true, data: song });
     } else {
@@ -43,7 +43,18 @@ exports.getSongById = async (req, res) => {
 
 exports.createSong = async (req, res) => {
   try {
-    const createdSong = await Song.create({ ...req.body, shareLink: uuidv4() });
+    const createdSong = await Song.create({
+      id: uuidv4(),
+      name: req.body.name,
+      url: req.body.url,
+      artists: [],
+      nol: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      time: req.body.time,
+      releaseDate: req.body.releaseDate,
+      wnol: 0,
+    });
     if (createdSong) {
       res.status(201).json({
         success: true,
@@ -59,10 +70,17 @@ exports.createSong = async (req, res) => {
 
 exports.updateSong = async (req, res) => {
   try {
-    const updatedSong = await Song.findByIdAndUpdate(req.params.id, {
-      ...req.body,
-      updatedAt: new Date(),
-    });
+    const updatedSong = await Song.findOneAndUpdate(
+      { id: req.params.id },
+      {
+        name: req.body.name,
+        url: req.body.url,
+        time: req.body.time,
+        releaseDate: req.body.releaseDate,
+        artists: req.body.artists,
+        updatedAt: new Date(),
+      }
+    );
     if (updatedSong) {
       res.status(200).json({
         success: true,
@@ -78,7 +96,7 @@ exports.updateSong = async (req, res) => {
 
 exports.deleteSong = async (req, res) => {
   try {
-    const deletedSong = await Song.findByIdAndDelete(req.params.id);
+    const deletedSong = await Song.findOneAndDelete({ id: req.params.id });
     if (deletedSong) {
       res
         .status(200)
