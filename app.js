@@ -4,6 +4,7 @@ const connectDB = require("./server/config/db");
 const mainRoutes = require("./server/routes/main");
 const songRoutes = require("./server/routes/song");
 const userRoutes = require("./server/routes/user");
+const playlistRoutes = require("./server/routes/playlist");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./server/config/swagger");
 
@@ -23,6 +24,7 @@ connectDB();
 app.use("/", mainRoutes);
 app.use("/songs", songRoutes);
 app.use("/users", userRoutes);
+app.use("/playlists", playlistRoutes);
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

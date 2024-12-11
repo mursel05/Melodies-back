@@ -1,6 +1,9 @@
 const User = require("../models/user");
 const { v4: uuidv4 } = require("uuid");
-const { createTokens, verifyRefreshToken } = require("./tokenController");
+const {
+  createTokens,
+  verifyRefreshToken,
+} = require("../utils/tokenController");
 const crypto = require("crypto");
 
 exports.register = async (req, res) => {
@@ -37,7 +40,6 @@ exports.register = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("register error", error);
     res.status(400).json({ success: false, error: "Something went wrong" });
   }
 };
@@ -66,16 +68,13 @@ exports.login = async (req, res) => {
       res.status(400).json({ success: false, message: "Account not found" });
     }
   } catch (error) {
-    console.log("login error", error);
     res.status(400).json({ success: false, error: "Something went wrong" });
   }
 };
 
 exports.refreshTokens = async (req, res) => {
   try {
-    const refreshToken = req.headers.authorization.split(" ")[1];
-    console.log("refreshToken", refreshToken);
-    
+    const refreshToken = req.headers.authorization?.split(" ")[1];
     verifyRefreshToken(refreshToken).then((decoded) => {
       if (decoded) {
         createTokens(decoded.sub).then((tokens) => {
@@ -92,7 +91,26 @@ exports.refreshTokens = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log("refreshTokens error", error);
+    res.status(400).json({ success: false, error: "Something went wrong" });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const resetToken = crypto.randomBytes(20).toString("hex");
+      user.resetPasswordToken = crypto
+        .createHash("sha256")
+        .update(resetToken)
+        .digest("hex");
+      user.resetPasswordExpires = Date.now() + 3600000;
+      await user.save();
+      res.status(200).json({ success: true, data: resetToken });
+    } else {
+      res.status(400).json({ success: false, message: "Account not found" });
+    }
+  } catch (error) {
     res.status(400).json({ success: false, error: "Something went wrong" });
   }
 };
