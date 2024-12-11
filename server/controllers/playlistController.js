@@ -1,37 +1,30 @@
-const Song = require("../models/song");
+const Playlist = require("../models/playlist");
 const { v4: uuidv4 } = require("uuid");
 const { verifyAccessToken } = require("../utils/tokenController");
 
-exports.getAllSongs = async (req, res) => {
+exports.getAllPlaylists = async (req, res) => {
   try {
-    let songs;
+    let playlists;
     const { category, limit } = req.params;
     if (category === "all") {
-      songs = await Song.find({}).limit(limit);
-    } else if (category === "weekly") {
-      songs = await Song.find({}).sort({ wnol: -1 }).limit(limit);
-    } else if (category === "new-releases") {
-      songs = await Song.find({}).sort({ releaseDate: -1 }).limit(limit);
-    } else if (category === "trending") {
-      songs = await Song.find({}).sort({ wnol: -1 }).limit(limit);
+      playlists = await Playlist.find({}).limit(limit);
     } else {
       return res.status(400).json({
         success: false,
-        error:
-          "Invalid category, Only [all, weekly, new-releases, trending] are allowed",
+        error: "Invalid category, Only [all] is allowed",
       });
     }
-    if (songs) {
-      res.status(200).json({ success: true, data: songs });
+    if (playlists) {
+      res.status(200).json({ success: true, data: playlists });
     } else {
-      res.status(404).json({ success: false, message: "No songs found" });
+      res.status(404).json({ success: false, message: "No playlistss found" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: String(error) });
   }
 };
 
-exports.getSongById = async (req, res) => {
+exports.getPlaylistById = async (req, res) => {
   try {
     const accessToken = req.headers.authorization?.split(" ")[1];
     const decoded = verifyAccessToken(accessToken);
@@ -41,18 +34,18 @@ exports.getSongById = async (req, res) => {
         message: "Unauthorized",
       });
     }
-    const song = await Song.findOne({ id: req.params.id });
-    if (song) {
-      res.status(200).json({ success: true, data: song });
+    const playlist = await Playlist.findOne({ id: req.params.id });
+    if (playlist) {
+      res.status(200).json({ success: true, data: playlist });
     } else {
-      res.status(404).json({ success: false, message: "Song not found" });
+      res.status(404).json({ success: false, message: "Playlist not found" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: String(error) });
   }
 };
 
-exports.createSong = async (req, res) => {
+exports.createPlaylist = async (req, res) => {
   try {
     const accessToken = req.headers.authorization?.split(" ")[1];
     const decoded = verifyAccessToken(accessToken);
@@ -62,33 +55,32 @@ exports.createSong = async (req, res) => {
         message: "Unauthorized",
       });
     }
-    const createdSong = await Song.create({
+    const createdPlaylist = await Playlist.create({
       id: uuidv4(),
       name: req.body.name,
-      url: req.body.url,
-      artists: req.body.artists,
-      nol: 0,
+      noa: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
       time: req.body.time,
-      releaseDate: req.body.releaseDate,
-      wnol: 0,
+      description: req.body.description,
+      songs: req.body.songs,
+      categories: req.body.categories,
       owner: decoded.sub,
     });
-    if (createdSong) {
+    if (createdPlaylist) {
       res.status(201).json({
         success: true,
-        message: "Song created successfully",
+        message: "Playlist created successfully",
       });
     } else {
-      res.status(400).json({ success: false, message: "Song not created" });
+      res.status(400).json({ success: false, message: "Playlist not created" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: String(error) });
   }
 };
 
-exports.updateSong = async (req, res) => {
+exports.updatePlaylist = async (req, res) => {
   try {
     const accessToken = req.headers.authorization?.split(" ")[1];
     const decoded = verifyAccessToken(accessToken);
@@ -98,44 +90,45 @@ exports.updateSong = async (req, res) => {
         message: "Unauthorized",
       });
     }
-    const song = await Song.findOne({ id: req.params.id });
-    if (!song) {
+    const playlist = await Playlist.findOne({ id: req.params.id });
+    if (!playlist) {
       return res.status(404).json({
         success: false,
-        message: "Song not found",
+        message: "Playlist not found",
       });
     }
-    if (song.owner !== decoded.sub) {
+    if (playlist.owner !== decoded.sub) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden: You do not have permission to update this song",
+        message:
+          "Forbidden: You do not have permission to update this playlist",
       });
     }
-    const updatedSong = await Song.findOneAndUpdate(
+    const updatedPlaylist = await Playlist.findOneAndUpdate(
       { id: req.params.id },
       {
         name: req.body.name,
-        url: req.body.url,
-        time: req.body.time,
-        releaseDate: req.body.releaseDate,
-        artists: req.body.artists,
         updatedAt: new Date(),
+        time: req.body.time,
+        description: req.body.description,
+        songs: req.body.songs,
+        categories: req.body.categories,
       }
     );
-    if (updatedSong) {
+    if (updatedPlaylist) {
       res.status(200).json({
         success: true,
-        message: "Song updated successfully",
+        message: "Playlist updated successfully",
       });
     } else {
-      res.status(404).json({ success: false, message: "Song not found" });
+      res.status(404).json({ success: false, message: "Playlist not found" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: String(error) });
   }
 };
 
-exports.deleteSong = async (req, res) => {
+exports.deletePlaylist = async (req, res) => {
   try {
     const accessToken = req.headers.authorization?.split(" ")[1];
     const decoded = verifyAccessToken(accessToken);
@@ -145,26 +138,29 @@ exports.deleteSong = async (req, res) => {
         message: "Unauthorized",
       });
     }
-    const song = await Song.findOne({ id: req.params.id });
-    if (!song) {
+    const playlist = await Playlist.findOne({ id: req.params.id });
+    if (!playlist) {
       return res.status(404).json({
         success: false,
-        message: "Song not found",
+        message: "Playlist not found",
       });
     }
-    if (song.owner !== decoded.sub) {
+    if (playlist.owner !== decoded.sub) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden: You do not have permission to delete this song",
+        message:
+          "Forbidden: You do not have permission to delete this playlist",
       });
     }
-    const deletedSong = await Song.findOneAndDelete({ id: req.params.id });
-    if (deletedSong) {
+    const deletedPlaylist = await Playlist.findOneAndDelete({
+      id: req.params.id,
+    });
+    if (deletedPlaylist) {
       res
         .status(200)
-        .json({ success: true, message: "Song deleted successfully" });
+        .json({ success: true, message: "Playlist deleted successfully" });
     } else {
-      res.status(404).json({ success: false, message: "Song not found" });
+      res.status(404).json({ success: false, message: "Playlist not found" });
     }
   } catch (error) {
     res.status(400).json({ success: false, error: String(error) });

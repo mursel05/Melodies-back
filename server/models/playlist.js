@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
-const SongSchema = new Schema({
+const PlaylistSchema = new Schema({
   id: {
     type: String,
     required: true,
@@ -12,16 +12,12 @@ const SongSchema = new Schema({
     type: String,
     required: true,
   },
-  url: {
-    type: String,
+  noa: {
+    //number of added
+    type: Number,
     required: true,
   },
-  artists: {
-    type: [String],
-    required: true,
-  },
-  nol: {
-    //number of listeners
+  time: {
     type: Number,
     required: true,
   },
@@ -34,23 +30,22 @@ const SongSchema = new Schema({
     type: Date,
     required: true,
   },
-  time: {
-    type: Number,
-    required: true,
-  },
-  releaseDate: {
-    type: Date,
-    required: true,
-  },
-  wnol: {
-    //weekly number of listeners
-    type: Number,
-    required: true,
-  },
   owner: {
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    required: true,
+  },
+  songs: {
+    type: [String],
+    required: true,
+  },
+  categories: {
+    type: [String],
+    required: true,
+  },
 });
 
-module.exports = mongoose.model("Song", SongSchema);
+module.exports = mongoose.model("Playlist", PlaylistSchema);

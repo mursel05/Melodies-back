@@ -1,36 +1,36 @@
 const express = require("express");
 const router = express.Router();
-const songController = require("../controllers/songController");
+const playlistController = require("../controllers/playlistController");
 
 /**
  * @swagger
  * tags:
- *   name: Songs
- *   description: Endpoints for managing songs
+ *   name: Playlists
+ *   description: Endpoints for managing playlists
  */
 
 /**
  * @swagger
- * /songs/{category}/{limit}:
+ * /playlists/{category}/{limit}:
  *   get:
- *     summary: Get all songs
- *     tags: [Songs]
+ *     summary: Get all playlists
+ *     tags: [Playlists]
  *     parameters:
  *       - in: path
  *         name: category
  *         required: true
  *         schema:
  *           type: string
- *         description: The category of the song to retrieve
+ *         description: The category of the playlist to retrieve
  *       - in: path
  *         name: limit
  *         required: true
  *         schema:
  *           type: number
- *         description: The number of songs to retrieve
+ *         description: The number of playlists to retrieve
  *     responses:
  *       200:
- *         description: List of all songs
+ *         description: List of all playlists
  *         content:
  *           application/json:
  *             schema:
@@ -46,36 +46,41 @@ const songController = require("../controllers/songController");
  *                     properties:
  *                       id:
  *                         type: string
- *                         description: The song ID
+ *                         description: The playlist ID
  *                       name:
  *                         type: string
- *                         description: The song name
- *                       url:
+ *                         description: The playlist name
+ *                       description:
  *                         type: string
- *                         description: The song URL
+ *                         description: The playlist description
+ *                       noa:
+ *                         type: number
+ *                         description: The number of added playlist
  *                       artists:
  *                         type: array
  *                         items:
  *                           type: string
- *                         description: List of song artists
- *                       nol:
- *                         type: number
- *                         description: Number of likes
+ *                         description: List of playlist artists
+ *                       categories:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                         description: List of playlist categories
  *                       createdAt:
  *                         type: string
  *                         format: date-time
- *                         description: Creation date of the song
- *                       time:
- *                         type: number
- *                         description: Duration of the song
- *                         default: 1
- *                       releaseDate:
+ *                         description: Creation date of the playlist
+ *                       updatedAt:
  *                         type: string
  *                         format: date-time
- *                         description: Release date of the song
+ *                         description: Updation date of the playlist
+ *                       time:
+ *                         type: number
+ *                         description: Duration of the playlist
+ *                         default: 1
  *                       owner:
  *                         type: string
- *                         description: The owner of song
+ *                         description: The owner of playlist
  *       400:
  *         description: Error message
  *         content:
@@ -91,14 +96,14 @@ const songController = require("../controllers/songController");
  *                   type: string
  *                   description: Error message
  */
-router.get("/:category/:limit", songController.getAllSongs);
+router.get("/:category/:limit", playlistController.getAllPlaylists);
 
 /**
  * @swagger
- * /songs/{id}:
+ * /playlists/{id}:
  *   get:
- *     summary: Get a song by ID
- *     tags: [Songs]
+ *     summary: Get a playlist by ID
+ *     tags: [Playlists]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -107,10 +112,10 @@ router.get("/:category/:limit", songController.getAllSongs);
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the song to retrieve
+ *         description: The ID of the playlist to retrieve
  *     responses:
  *       200:
- *         description: Song found
+ *         description: Playlist found
  *         content:
  *           application/json:
  *             schema:
@@ -120,40 +125,45 @@ router.get("/:category/:limit", songController.getAllSongs);
  *                   type: boolean
  *                   description: Indicates if the request was successful
  *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                       description: The song ID
- *                     name:
- *                       type: string
- *                       description: The song name
- *                     url:
- *                       type: string
- *                       description: The song URL
- *                     artists:
- *                       type: array
- *                       items:
+ *                     type: object
+ *                     properties:
+ *                       id:
  *                         type: string
- *                       description: List of song artists
- *                     nol:
- *                       type: number
- *                       description: Number of likes
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                       description: Creation date of the song
- *                     time:
- *                       type: number
- *                       description: Duration of the song
- *                       default: 1
- *                     releaseDate:
- *                       type: string
- *                       format: date-time
- *                       description: Release date of the song
- *                     owner:
- *                       type: string
- *                       description: The owner of song
+ *                         description: The playlist ID
+ *                       name:
+ *                         type: string
+ *                         description: The playlist name
+ *                       description:
+ *                         type: string
+ *                         description: The playlist description
+ *                       noa:
+ *                         type: number
+ *                         description: The number of added playlist
+ *                       artists:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                         description: List of playlist artists
+ *                       categories:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                         description: List of playlist categories
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Creation date of the playlist
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         description: Updation date of the playlist
+ *                       time:
+ *                         type: number
+ *                         description: Duration of the playlist
+ *                         default: 1
+ *                       owner:
+ *                         type: string
+ *                         description: The owner of playlist
  *       400:
  *         description: Error message
  *         content:
@@ -169,14 +179,14 @@ router.get("/:category/:limit", songController.getAllSongs);
  *                   type: string
  *                   description: Error message
  */
-router.get("/:id", songController.getSongById);
+router.get("/:id", playlistController.getPlaylistById);
 
 /**
  * @swagger
- * /songs:
+ * /playlists:
  *   post:
- *     summary: Create a new song
- *     tags: [Songs]
+ *     summary: Create a new playlist
+ *     tags: [Playlists]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -188,29 +198,30 @@ router.get("/:id", songController.getSongById);
  *             properties:
  *               name:
  *                 type: string
- *                 description: The song name
- *               url:
+ *                 description: The playlist name
+ *               description:
  *                 type: string
- *                 description: The song URL
- *               artists:
+ *                 description: The playlist description
+ *               songs:
  *                 type: array
  *                 items:
  *                   type: string
- *                 description: List of song artists
+ *                 description: List of playlist songs
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of playlist categories
  *               time:
  *                 type: number
- *                 description: Duration of the song
+ *                 description: Duration of the playlist
  *                 default: 1
- *               releaseDate:
- *                 type: string
- *                 format: date-time
- *                 description: Release date of the song
  *             required:
  *              - name
- *              - url
- *              - artists
+ *              - description
+ *              - songs
+ *              - categories
  *              - time
- *              - releaseDate
  *     responses:
  *       201:
  *         description: Success message
@@ -240,14 +251,14 @@ router.get("/:id", songController.getSongById);
  *                   type: string
  *                   description: Error message
  */
-router.post("/", songController.createSong);
+router.post("/", playlistController.createPlaylist);
 
 /**
  * @swagger
- * /songs/{id}:
+ * /playlists/{id}:
  *   put:
- *     summary: Update a song by ID
- *     tags: [Songs]
+ *     summary: Update a playlist by ID
+ *     tags: [Playlists]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -256,7 +267,7 @@ router.post("/", songController.createSong);
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the song to update
+ *         description: The ID of the playlist to update
  *     requestBody:
  *       required: true
  *       content:
@@ -264,31 +275,32 @@ router.post("/", songController.createSong);
  *           schema:
  *             type: object
  *             properties:
- *              name:
- *                type: string
- *                description: The song name
- *              url:
- *                type: string
- *                description: The song URL
- *              artists:
- *                type: array
- *                items:
- *                  type: string
- *                  description: List of song artists
- *              time:
- *                type: number
- *                description: Duration of the song
- *                default: 1
- *              releaseDate:
- *                type: string
- *                format: date-time
- *                description: Release date of the song
+ *               name:
+ *                 type: string
+ *                 description: The playlist name
+ *               description:
+ *                 type: string
+ *                 description: The playlist description
+ *               songs:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of playlist songs
+ *               categories:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of playlist categories
+ *               time:
+ *                 type: number
+ *                 description: Duration of the playlist
+ *                 default: 1
  *             required:
  *              - name
- *              - url
- *              - artists
+ *              - description
+ *              - 
+ *              - categories
  *              - time
- *              - releaseDate
  *     responses:
  *       200:
  *         description: Success message
@@ -318,14 +330,14 @@ router.post("/", songController.createSong);
  *                   type: string
  *                   description: Error message
  */
-router.put("/:id", songController.updateSong);
+router.put("/:id", playlistController.updatePlaylist);
 
 /**
  * @swagger
- * /songs/{id}:
+ * /playlists/{id}:
  *   delete:
- *     summary: Delete a song by ID
- *     tags: [Songs]
+ *     summary: Delete a playlist by ID
+ *     tags: [Playlists]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -334,7 +346,7 @@ router.put("/:id", songController.updateSong);
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the song to delete
+ *         description: The ID of the playlist to delete
  *     responses:
  *       200:
  *         description: Success message
@@ -364,6 +376,6 @@ router.put("/:id", songController.updateSong);
  *                   type: string
  *                   description: Error message
  */
-router.delete("/:id", songController.deleteSong);
+router.delete("/:id", playlistController.deletePlaylist);
 
 module.exports = router;
