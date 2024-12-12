@@ -5,6 +5,7 @@ const {
   verifyRefreshToken,
 } = require("../utils/tokenController");
 const crypto = require("crypto");
+const { sendMail } = require("../utils/mailController");
 
 exports.register = async (req, res) => {
   try {
@@ -99,14 +100,26 @@ exports.forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (user) {
-      const resetToken = crypto.randomBytes(20).toString("hex");
-      user.resetPasswordToken = crypto
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
-      user.resetPasswordExpires = Date.now() + 3600000;
-      await user.save();
-      res.status(200).json({ success: true, data: resetToken });
+      const clientUrl = process.env.CLIENT_URL;
+      const data = {
+        to: user.email,
+        subject: "Password reset",
+        text: "Reset your password",
+        html: `This message is sent to reset your password. Click <a href="${clientUrl}/reset-password/${user.id}">here</a> to reset your password<br/>If you didn't request this, you can ignore this email`,
+      };
+      sendMail(data).then((result) => {
+        if (result) {
+          res.status(200).json({
+            success: true,
+            message:
+              "An email has been sent to reset your password. Please check your email",
+          });
+        } else {
+          res
+            .status(400)
+            .json({ success: false, error: "Something went wrong" });
+        }
+      });
     } else {
       res.status(400).json({ success: false, message: "Account not found" });
     }
