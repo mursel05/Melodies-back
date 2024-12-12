@@ -127,3 +127,19 @@ exports.forgotPassword = async (req, res) => {
     res.status(400).json({ success: false, error: "Something went wrong" });
   }
 };
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ id: req.params.id });
+    if (user) {
+      user.password = crypto
+        .createHash("sha256")
+        .update(req.body.password)
+        .digest("hex");
+      await user.save();
+      res.status(200).json({ success: true, message: "Password updated" });
+    }
+  } catch (error) {
+    res.status(400).json({ success: false, error: "Something went wrong" });
+  }
+};
