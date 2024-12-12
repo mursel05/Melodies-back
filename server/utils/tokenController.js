@@ -40,8 +40,8 @@ exports.verifyAccessToken = (accesstoken) => {
     const decoded = jwt.verify(accesstoken, jwtSecretKey);
     return decoded;
   } catch (error) {
-    // return null;
-    return { sub: "e3f069fc-12ec-4bac-b7ae-f7f7a17c0785" };
+    return null;
+    // return { sub: "e3f069fc-12ec-4bac-b7ae-f7f7a17c0785" };
   }
 };
 
