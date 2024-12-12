@@ -190,4 +190,53 @@ router.post("/login", userController.login);
  */
 router.post("/refresh-tokens", userController.refreshTokens);
 
+/**
+ * @swagger
+ * /users/forgot-password:
+ *   post:
+ *     summary: Send an email to reset password
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user email
+ *             required:
+ *              - email
+ *     responses:
+ *       200:
+ *         description: Success message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *       400:
+ *         description: Error message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: false
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+router.post("/forgot-password", userController.forgotPassword);
+
 module.exports = router;
