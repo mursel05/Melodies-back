@@ -49,7 +49,7 @@ const userController = require("../controllers/userController");
  *                 data:
  *                   type: object
  *                   properties:
- *                     accesstoken:
+ *                     accessToken:
  *                       type: string
  *                       description: Access token
  *                     refreshToken:
@@ -108,7 +108,7 @@ router.post("/register", userController.register);
  *                 data:
  *                   type: object
  *                   properties:
- *                     accesstoken:
+ *                     accessToken:
  *                       type: string
  *                       description: Access token
  *                     refreshToken:
@@ -153,7 +153,7 @@ router.post("/login", userController.login);
  *                 data:
  *                   type: object
  *                   properties:
- *                     accesstoken:
+ *                     accessToken:
  *                       type: string
  *                       description: Access token
  *                     refreshToken:
@@ -238,5 +238,169 @@ router.post("/refresh-tokens", userController.refreshTokens);
  *                   description: Error message
  */
 router.post("/forgot-password", userController.forgotPassword);
+
+/**
+ * @swagger
+ * /users/reset-password:
+ *   post:
+ *     summary: Update password
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *              token:
+ *                type: string
+ *                description: The user token
+ *              password:
+ *                type: string
+ *                description: The user password
+ *             required:
+ *              - password
+ *              - token
+ *     responses:
+ *       200:
+ *         description: Success message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *       400:
+ *         description: Error message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: false
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+
+router.post("/reset-password", userController.resetPassword);
+
+/**
+ * @swagger
+ * /users/enable-2fa:
+ *   post:
+ *     summary: Enable 2FA
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user email
+ *             required:
+ *              - email
+ *     responses:
+ *       200:
+ *         description: Success message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     qrCodeUrl:
+ *                       type: string
+ *                       description: QR code URL
+ *                     secret:
+ *                       type: string
+ *                       description: Secret key
+ *       400:
+ *         description: Error message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: false
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+
+router.post("/enable-2fa", userController.enable2fa);
+
+/**
+ * @swagger
+ * /users/verify-2fa:
+ *   post:
+ *     summary: Verify 2FA
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user email
+ *               token:
+ *                 type: string
+ *                 description: The user token
+ *             required:
+ *              - email
+ *              - token
+ *     responses:
+ *       200:
+ *         description: Success message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *       400:
+ *         description: Error message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
+ *                   default: false
+ *                 error:
+ *                   type: string
+ *                   description: Error message
+ */
+
+router.post("/verify-2fa", userController.verify2fa);
 
 module.exports = router;

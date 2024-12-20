@@ -12,7 +12,7 @@ const refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPIRES_IN;
 
 exports.createTokens = async (userId) => {
   try {
-    const accesstoken = jwt.sign({ sub: userId }, jwtSecretKey, {
+    const accessToken = jwt.sign({ sub: userId }, jwtSecretKey, {
       expiresIn: Number(accessTokenExpiresIn),
     });
     const refreshToken = jwt.sign({ sub: userId }, jwtSecretKey, {
@@ -29,15 +29,15 @@ exports.createTokens = async (userId) => {
       expiresAt: new Date(Date.now() + Number(refreshTokenExpiresIn) * 1000),
       createdAt: new Date(),
     });
-    return { accesstoken, refreshToken };
+    return { accessToken, refreshToken };
   } catch (error) {
     return null;
   }
 };
 
-exports.verifyAccessToken = (accesstoken) => {
+exports.verifyAccessToken = (accessToken) => {
   try {
-    const decoded = jwt.verify(accesstoken, jwtSecretKey);
+    const decoded = jwt.verify(accessToken, jwtSecretKey);
     return decoded;
   } catch (error) {
     return null;

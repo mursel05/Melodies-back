@@ -7,6 +7,7 @@ const userRoutes = require("./server/routes/user");
 const playlistRoutes = require("./server/routes/playlist");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./server/config/swagger");
+const path = require("path");
 
 // Load env vars
 dotenv.config();
@@ -26,13 +27,17 @@ app.use("/songs", songRoutes);
 app.use("/users", userRoutes);
 app.use("/playlists", playlistRoutes);
 
+// Static folder
+app.use("/public", express.static(path.join(__dirname, "public")));
+console.log("http://localhost:5000/public/demo.png");
+
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error("Error: ", err);
-  res.status(500).json({ message: "Something went wrong!" });
+  res.status(500).json({ success: false, message: "Server error" });
 });
 
 // Start server

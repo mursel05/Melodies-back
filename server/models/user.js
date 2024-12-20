@@ -42,6 +42,9 @@ const UserSchema = new Schema({
     type: [String],
     required: true,
   },
+  secret: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);
