@@ -29,7 +29,6 @@ app.use("/playlists", playlistRoutes);
 
 // Static folder
 app.use("/public", express.static(path.join(__dirname, "public")));
-console.log("http://localhost:5000/public/demo.png");
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
